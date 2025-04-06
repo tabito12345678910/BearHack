@@ -11,6 +11,6 @@ that they are fully aware of the extent of their coverage.
 How to run:
 - install node.js
 - open terminal (powershell or cmd)
-- - cd to root directory
+- cd to root directory
 - run mpm install
 - run mpm run dev
