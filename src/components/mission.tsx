@@ -44,7 +44,7 @@ const Mission = () => {
             <div className="relative z-10">
               <h4 className="text-xl font-bold text-pink-400 mb-2">2. Personalized Analysis</h4>
               <p className="text-white text-sm leading-relaxed">
-                Our backend uses a machine learning model and government datasets to find the best-matched insurance plans by
+                Our backend searches through government datasets to find the best-matched insurance plans by
                 coverage, cost, and eligibility for subsidies.
               </p>
             </div>
@@ -61,6 +61,14 @@ const Mission = () => {
             </div>
           </div>
         </div>
+
+          <h4 className="text-xl font-bold text-pink-400 mb-4 mt-10">Important Disclaimer</h4>
+          <p className="text-sm leading-relaxed">
+            Due to the nature of insurance data availability, <span className="font-bold text-pink-400">some states</span> may not be represented in our dataset. This is because the dataset we rely on only includes certain states, as not all regions have submitted data for the current year.
+          </p>
+          <p className="text-sm leading-relaxed mt-4">
+            While we cannot currently offer recommendations for <span className="font-bold text-pink-400">those states</span>, we continue to improve and expand our coverage, and aim to include all regions in the future. Despite this limitation, our mission remains unchanged: to provide equitable, transparent, and affordable health insurance access to as many people as possible across the nation.
+          </p>
       </div>
     </section>
   );

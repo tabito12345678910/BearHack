@@ -22,6 +22,8 @@ const Output: React.FC = () => {
   const [plans, setPlans] = useState<InsurancePlan[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showHelp, setShowHelp] = useState<boolean>(false);
+
 
   useEffect(() => {
     const fetchPlans = async () => {
@@ -57,6 +59,10 @@ const Output: React.FC = () => {
     fetchPlans();
   }, []);
 
+  const handleHelpClick = () => {
+    setShowHelp(!showHelp); 
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-black text-white px-6 py-10 flex flex-col items-center">
@@ -91,21 +97,64 @@ const Output: React.FC = () => {
     return <div className="text-center text-white mt-10">No plans were found for your input.</div>;
   }
 
+  const formatDeductibleDetails = (deductibleDetails: string) => {
+    if (deductibleDetails.includes("Included in Medical")) {
+      return deductibleDetails.replace("$Included in Medical", "Covered under Medical: ");
+    }
+    if (deductibleDetails.includes("Included in Drugs")) {
+      return deductibleDetails.replace("$Included in Drugs", "Covered under Drugs: ");
+    }
+    return deductibleDetails;
+  };
+
+
+
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-900 via-black to-black text-white px-6 py-10">
-      <h2 className="text-4xl font-bold mb-8 text-center text-white">Top Recommended Insurance Plans</h2>
+      <h2 className="text-4xl font-bold mb-8 text-center text-white">Top Recommended Insurance Plans
+      <button onClick={handleHelpClick} className="ml-2 mt-3">
+                <img src="/help.webp" alt="Help" className="w-6 h-6 cursor-pointer transition transform hover:scale-120 duration-200 ease-in-out" />
+              </button>
+
+            {showHelp && (
+              <div className="fixed absolute top-0 left-0 right-0 p-4 bg-neutral-800 text-white rounded-lg mt-10 shadow-lg max-w-md mx-auto z-50">
+                <h3 className="font-bold text-pink-400 text-lg">Help</h3>
+                <p className="mt-2 text-lg">
+                  Definitions
+                  <ul className="list-disc ml-4 text-base">
+                    <li><strong>Premium:</strong> Monthly amount paid to the insurance company.</li>
+                    <li><strong>Deductible:</strong> Amount paid out-of-pocket before the insurer helps cover costs.</li>
+                    <li><strong>OOP (Out of Pocket):</strong> Maximum amount you will pay for covered care.</li>
+                    <li><strong>Copay:</strong> Amount you pay after the deductible for specific services.</li>
+                    <li><strong>Coinsurance:</strong> Percentage you pay after meeting your deductible.</li>
+                    <li><strong>Metal Tier:</strong> Plan quality from Catastrophic to Platinum, affecting coverage and premium.</li>
+                    <li><strong>Plan Type:</strong> Determines which doctors and hospitals you can use.</li>
+                    </ul>
+                  <button
+                    onClick={handleHelpClick}
+                    className="mt-4 bg-pink-500 hover:bg-pink-600 text-white font-bold py-1 px-4 rounded-md"
+                  >
+                    Close
+                  </button>
+                </p>
+              </div>
+            )}
+
+      </h2>
 
       <div className="flex flex-col items-center space-y-10">
-        {plans.map((plan, index) => (
+        {plans.slice(0, 5).map((plan, index) => (
           <motion.div
             key={index}
             whileHover={{ scale: 1.02 }}
             transition={{ type: "spring", stiffness: 200 }}
-            className="bg-neutral-900 p-8 rounded-xl shadow-xl w-full max-w-2xl border border-pink-400/30 hover:border-pink-400 transition-all duration-300"
+            className="bg-neutral-900 p-8 rounded-xl shadow-xl w-full max-w-2xl border border-pink-400/30 hover:border-pink-400 hover:shadow-[0_0_10px_#00f0ff50] transition transform hover:scale-103 duration-200"
           >
             <div className="text-center mb-6">
               <p className="text-sm uppercase text-gray-400">Rank</p>
               <p className="text-3xl font-extrabold text-pink-400">#{index + 1}</p>
+              
             </div>
 
             <h3 className="text-2xl font-bold text-center text-pink-300 mb-2">{plan.planName}</h3>
@@ -121,9 +170,9 @@ const Output: React.FC = () => {
               <p><strong>Phone (Toll Free):</strong> {plan.phoneTollFree}</p>
               <p><strong>Phone (TTY):</strong> {plan.phoneTTY}</p>
               <p><strong>Total Premium:</strong> {plan.totalPremium}</p>
-              <p><strong>Dental (Adult):</strong> {plan.dentalAdult}</p>
-              <p><strong>Dental (Child):</strong> {plan.dentalChild}</p>
-              <p><strong>Deductible Info:</strong> {plan.deductibleDetails}</p>
+              <p><strong>Dental (Adult):</strong> {plan.dentalAdult === '' || plan.dentalAdult === 'X' ? 'None' : plan.dentalAdult}</p>
+              <p><strong>Dental (Child):</strong> {plan.dentalChild === '' || plan.dentalChild === 'X' ? 'None' : plan.dentalChild}</p>
+              <p><strong>Deductible Info:</strong> {formatDeductibleDetails(plan.deductibleDetails)}</p>
               <p><strong>OOP / Copay / Coinsurance:</strong> {plan.oopDetails}</p>
               <p className="md:col-span-2">
                 <strong>Network URL:</strong>{" "}

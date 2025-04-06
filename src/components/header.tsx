@@ -39,8 +39,6 @@ const Header: React.FC = () => {
           <div className="absolute right-0 mt-2 w-48 bg-neutral-800 rounded-md shadow-lg z-50">
             <Link href="/" className="block px-4 py-2 hover:bg-pink-400 hover:shadow-[0_0_10px_#00f0ff50] focus:outline-none focus:ring-2 focus:ring-pink-400 transition transform hover:scale-105 duration-200">Home</Link>
             <Link href="/input" className="block px-4 py-2 hover:bg-pink-400 hover:shadow-[0_0_10px_#00f0ff50] focus:outline-none focus:ring-2 focus:ring-pink-400 transition transform hover:scale-105 duration-200">Get Estimate</Link>
-            <Link href="/about" className="block px-4 py-2 hover:bg-pink-400 hover:shadow-[0_0_10px_#00f0ff50] focus:outline-none focus:ring-2 focus:ring-pink-400 transition transform hover:scale-105 duration-200">About</Link>
-            <Link href="/contact" className="block px-4 py-2 hover:bg-pink-400 hover:shadow-[0_0_10px_#00f0ff50] focus:outline-none focus:ring-2 focus:ring-pink-400 transition transform hover:scale-105 duration-200">Contact</Link>
           </div>
         )}
       </div>

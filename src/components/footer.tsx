@@ -38,12 +38,6 @@ const Footer = () => {
           >
             Input Insurance Information
           </Link>
-          <Link
-            href="/chat"
-            className="hover:text-cyan-400 transition"
-          >
-            Our Mission
-          </Link>
         </nav>
 
       </div>

@@ -1,5 +1,87 @@
 import sys
 import json
+import pandas as pd
+import os
+
+def sanitize_dental(value):
+    """Only clean dental values: X, blank, or NaN → 'None'"""
+    if pd.isna(value) or str(value).strip().upper() == str(value).strip() == "":
+        return "None"
+    elif pd.isna(value) or str(value).strip().upper() == str(value).strip() == "X":
+        return "Yes"
+    return str(value)
+
+def sanitize_currency(value):
+    """Ensure a single $ sign and strip whitespace (leave blank if empty)"""
+    if pd.isna(value) or value == "" or any(char.isalpha() for char in str(value)):  # Check if there's any alphabetic character
+        return "N/A"
+    value_str = str(value).strip().lstrip("$")
+    return f"${value_str}"
+
+def interpolate_premium(row, age):
+    """Estimate premium cost using linear interpolation by age"""
+    age_cols = {
+        14: "Premium Child Age 0-14",
+        18: "Premium Child Age 18",
+        21: "Premium Adult Individual Age 21",
+        27: "Premium Adult Individual Age 27",
+        30: "Premium Adult Individual Age 30",
+        40: "Premium Adult Individual Age 40",
+        50: "Premium Adult Individual Age 50",
+        60: "Premium Adult Individual Age 60"
+    }
+
+    try:
+        values = [row.get(col, 0) for col in age_cols.values()]
+        breakpoints = list(age_cols.keys())
+    except:
+        return 0
+
+    for i in range(len(breakpoints) - 1):
+        if breakpoints[i] <= age <= breakpoints[i + 1]:
+            x0, x1 = breakpoints[i], breakpoints[i + 1]
+            y0, y1 = values[i], values[i + 1]
+            return y0 + (y1 - y0) * (age - x0) / (x1 - x0)
+
+    return values[-1]
+
+def format_output_row(row):
+    """Format a single row of data for output"""
+    deductible_info = f"{sanitize_currency(row.get('Medical Deductible - Individual - Standard'))} Medical / {sanitize_currency(row.get('Drug Deductible - Individual - Standard'))} Drugs"
+    
+    oop_value = sanitize_currency(row.get('Medical Maximum Out Of Pocket - Individual - Standard'))
+    copay_value = sanitize_currency(row.get('Specialist - Standard'))
+    coinsurance_value = sanitize_currency(row.get('Generic Drugs - Standard'))
+
+    oop_details = []
+    
+    if "$" in oop_value and oop_value != "N/A" and not any(char.isalpha() for char in oop_value):
+        oop_details.append(f"Out of Pocket Max: {oop_value}")
+    
+    if "$" in copay_value and copay_value != "N/A" and not any(char.isalpha() for char in copay_value):
+        oop_details.append(f"Copay: {copay_value}")
+    
+    if "$" in coinsurance_value and coinsurance_value != "N/A" and not any(char.isalpha() for char in coinsurance_value):
+        coinsurance_value = coinsurance_value.lstrip('$') + '%'
+        oop_details.append(f"Coinsurance: {coinsurance_value}")
+
+    oop_details = " / ".join(oop_details) if oop_details else "No Charge after Deductible"
+
+    return {
+        "planName": row.get("Plan Marketing Name", ""),
+        "metalTier": row.get("Metal Level", ""),
+        "planType": row.get("Plan Type", ""),
+        "phoneLocal": row.get("Customer Service Phone Number Local", ""),
+        "phoneTollFree": row.get("Customer Service Phone Number Toll Free", ""),
+        "phoneTTY": row.get("Customer Service Phone Number TTY", "") or "None",
+        "networkURL": row.get("Network URL", ""),
+        "totalPremium": sanitize_currency(row["Estimated Cost"]),
+        "dentalAdult": sanitize_dental(row.get("Adult Dental")),
+        "dentalChild": sanitize_dental(row.get("Child Dental")),
+        "deductibleDetails": deductible_info,
+        "oopDetails": oop_details,
+        "estimatedTotalCost": sanitize_currency(row["Estimated Cost"]),
+    }
 
 def main():
     if len(sys.argv) < 2:
@@ -12,91 +94,46 @@ def main():
         print(json.dumps({"error": "Invalid input format."}))
         return
 
-    # Log input (optional for debug)
     print("DEBUG: Parsed user data =", user_input, file=sys.stderr)
 
-    # Generate 5 mock plans
-    mock_plans = [
-        {
-            "planName": "SilverCare Advantage",
-            "metalTier": "Silver",
-            "planType": "HMO",
-            "phoneLocal": "555-123-4567",
-            "phoneTollFree": "800-123-4567",
-            "phoneTTY": "711",
-            "networkURL": "https://www.silvercare.com",
-            "totalPremium": "$4,800",
-            "dentalAdult": "Yes",
-            "dentalChild": "Yes",
-            "deductibleDetails": "$2,000 Medical / $500 Drugs",
-            "oopDetails": "$8,500 Max / $30 Copay / 20% Coinsurance",
-            "estimatedTotalCost": "$6,100"
-        },
-        {
-            "planName": "HealthFirst Gold Plus",
-            "metalTier": "Gold",
-            "planType": "PPO",
-            "phoneLocal": "555-234-5678",
-            "phoneTollFree": "800-234-5678",
-            "phoneTTY": "711",
-            "networkURL": "https://www.healthfirst.com",
-            "totalPremium": "$6,000",
-            "dentalAdult": "Yes",
-            "dentalChild": "Yes",
-            "deductibleDetails": "$1,200 Medical / $300 Drugs",
-            "oopDetails": "$6,500 Max / $20 Copay / 15% Coinsurance",
-            "estimatedTotalCost": "$7,200"
-        },
-        {
-            "planName": "Essential Bronze Basic",
-            "metalTier": "Bronze",
-            "planType": "EPO",
-            "phoneLocal": "555-345-6789",
-            "phoneTollFree": "800-345-6789",
-            "phoneTTY": "711",
-            "networkURL": "https://www.essentialbronze.com",
-            "totalPremium": "$3,600",
-            "dentalAdult": "No",
-            "dentalChild": "Yes",
-            "deductibleDetails": "$5,000 Medical / $1,000 Drugs",
-            "oopDetails": "$9,000 Max / $40 Copay / 30% Coinsurance",
-            "estimatedTotalCost": "$6,800"
-        },
-        {
-            "planName": "FamilyCare Premium",
-            "metalTier": "Platinum",
-            "planType": "POS",
-            "phoneLocal": "555-456-7890",
-            "phoneTollFree": "800-456-7890",
-            "phoneTTY": "711",
-            "networkURL": "https://www.familycare.com",
-            "totalPremium": "$7,800",
-            "dentalAdult": "Yes",
-            "dentalChild": "Yes",
-            "deductibleDetails": "$750 Medical / $200 Drugs",
-            "oopDetails": "$5,000 Max / $15 Copay / 10% Coinsurance",
-            "estimatedTotalCost": "$8,300"
-        },
-        {
-            "planName": "SmartHealth Saver",
-            "metalTier": "Silver",
-            "planType": "HMO",
-            "phoneLocal": "555-567-8901",
-            "phoneTollFree": "800-567-8901",
-            "phoneTTY": "711",
-            "networkURL": "https://www.smarthealth.com",
-            "totalPremium": "$4,500",
-            "dentalAdult": "No",
-            "dentalChild": "No",
-            "deductibleDetails": "$2,500 Medical / $750 Drugs",
-            "oopDetails": "$7,000 Max / $35 Copay / 25% Coinsurance",
-            "estimatedTotalCost": "$6,900"
-        }
-    ]
+    state = user_input.get("state")
+    county = user_input.get("county")
+    ages = [int(age) for age in user_input.get("ages", [])]
+    metal_tiers = user_input.get("metalTiers", "No Preference")
 
-    # Output JSON
-    print(json.dumps({ "plans": mock_plans }))
+    if not state or not county or not ages:
+        print(json.dumps({"error": "Missing required input fields."}))
+        return
 
+    file_path = f"public/data/states/{state}/plans.json"
+    if not os.path.exists(file_path):
+        print(json.dumps({"error": f"No data found for state: {state}"}))
+        return
+
+    try:
+        df = pd.read_json(file_path)
+    except Exception as e:
+        print(json.dumps({"error": f"Failed to load data: {str(e)}"}))
+        return
+
+    df.columns = df.columns.str.strip()
+    df = df[df["County Name"].str.strip() == county]
+
+    if df.empty:
+        print(json.dumps({"error": f"No plans found for {county}, {state}"}))
+        return
+
+    if metal_tiers != "No Preference":
+        df = df[df["Metal Level"] == metal_tiers]
+
+    df["Estimated Cost"] = df.apply(
+        lambda row: sum(interpolate_premium(row, age) for age in ages), axis=1
+    )
+
+    df = df.sort_values(by="Estimated Cost").head(5)
+
+    output = [format_output_row(row) for _, row in df.iterrows()]
+    print(json.dumps({ "plans": output }, indent=2))
 
 if __name__ == "__main__":
     main()
