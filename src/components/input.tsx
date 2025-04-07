@@ -84,6 +84,7 @@ const Input: React.FC = () => {
     }
     setFormData((prev) => ({ ...prev, county: "" }));
   }, [formData.state, countyData]);
+  
 
   const showPopupMessage = (message: string) => {
     setPopupMessage(message);
@@ -155,7 +156,7 @@ const Input: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-gray-900 to-black px-4 py-10 flex items-center justify-center">
-      <div onClick={() => setHasInteracted(true)} className="bg-neutral-900 p-8 rounded-2xl shadow-xl w-full max-w-3xl text-white">
+      <div onClick={() => setHasInteracted(true)} className="bg-neutral-800 p-12 rounded-2xl shadow-xl w-full max-w-5xl text-white">
         <h2 className="text-2xl mb-6 text-center font-bold">
           {loading ? (
             <motion.div
@@ -244,7 +245,7 @@ const Input: React.FC = () => {
               type="number"
               value={formData.income}
               onChange={(e) => setFormData((prev) => ({ ...prev, income: e.target.value }))}
-              className="w-full bg-neutral-900 text-white p-2 rounded-md border border-black focus:ring-2 focus:ring-pink-400"
+              className="w-full bg-neutral-800 hover:bg-neutral-700 border border-black text-left px-4 py-2 rounded-md text-white hover:border-pink-400 hover:shadow-[0_0_10px_#00f0ff50] focus:outline-none focus:ring-2 focus:ring-pink-400 transition transform hover:scale-105 duration-200"
               placeholder="e.g. 52000"
             />
           </div>
@@ -265,10 +266,10 @@ const Input: React.FC = () => {
 
             {showHelp && (
               <div className="fixed absolute top-0 left-0 right-0 p-4 bg-neutral-800 text-white rounded-lg mt-10 shadow-lg max-w-md mx-auto z-50">
-                <h3 className="font-bold text-pink-400">Minimum Coverage Type (Metal Tier)</h3>
-                <p className="mt-2 text-sm">
+                <h3 className="font-bold text-pink-400 text-xl">Minimum Coverage Type (Metal Tier)</h3>
+                <div className="mt-2 text-xl">
                   The metal tiers represent the percentage of healthcare costs that the insurance plan covers.
-                  <ul className="list-disc ml-4">
+                  <ul className="list-disc ml-4 text-lg">
                     <li><strong>Platinum:</strong> Covers 90% of costs, leaving you with 10% responsibility.</li>
                     <li><strong>Gold:</strong> Covers 80% of costs, leaving you with 20% responsibility.</li>
                     <li><strong>Silver:</strong> Covers 70% of costs, leaving you with 30% responsibility.</li>
@@ -282,7 +283,7 @@ const Input: React.FC = () => {
                   >
                     Close
                   </button>
-                </p>
+                </div>
               </div>
             )}
           </div>
@@ -336,7 +337,7 @@ const Input: React.FC = () => {
                     setFormData((prev) => ({ ...prev, ages: newAges }));
                   }}
                   placeholder={`Member ${idx + 1}`}
-                  className="w-full bg-neutral-900 text-white p-2 rounded-md border border-black focus:ring-2 focus:ring-pink-400"
+                  className="w-full bg-neutral-800 hover:bg-neutral-700 border border-black text-left px-4 py-2 rounded-md text-white hover:border-pink-400 hover:shadow-[0_0_10px_#00f0ff50] focus:outline-none focus:ring-2 focus:ring-pink-400 transition transform hover:scale-105 duration-200"
                 />
               ))}
             </div>
@@ -346,13 +347,13 @@ const Input: React.FC = () => {
         <div className="mt-6 text-center flex justify-center gap-4">
           <button
             onClick={handleReset}
-            className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded-md"
+            className="bg-neutral-800 border border-black hover:bg-neutral-700 text-white font-bold py-2 px-6 rounded-md hover:ring-2 hover:ring-pink-400 hover:shadow-[0_0_10px_#00f0ff50] focus:outline-none focus:ring-1 focus:ring-pink-400 transition transform hover:scale-105 duration-200"
           >
             Reset
           </button>
           <button
             onClick={handleSubmit}
-            className="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-6 rounded-md"
+            className="bg-neutral-800 border border-black hover:bg-neutral-700 text-white font-bold py-2 px-6 rounded-md hover:ring-2 hover:ring-pink-400 hover:shadow-[0_0_10px_#00f0ff50] focus:outline-none focus:ring-1 focus:ring-pink-400 transition transform hover:scale-105 duration-200"
           >
             Submit
           </button>

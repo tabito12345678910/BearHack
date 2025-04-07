@@ -34,7 +34,7 @@ const Mission = () => {
             <div className="relative z-10">
               <h4 className="text-xl font-bold text-pink-400 mb-2">1. Input Basic Info</h4>
               <p className="text-white text-sm leading-relaxed">
-                Users fill out a short form with details like zip code, age, income, and household size. No signup required.
+                Users fill out a short form with details like county, age, income, minimum coverage and household size. No signup required.
               </p>
             </div>
           </div>

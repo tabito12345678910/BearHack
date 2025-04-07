@@ -47,7 +47,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
       <button
         type="button"
         onClick={() => setIsOpen(prev => !prev)}
-        className="w-full bg-neutral-900 border border-black text-left px-4 py-2 rounded-md text-white hover:border-pink-400 hover:shadow-[0_0_10px_#00f0ff50] focus:outline-none focus:ring-2 focus:ring-pink-400 transition transform hover:scale-105 duration-200"
+        className="w-full bg-neutral-800 hover:bg-neutral-700 border border-black text-left px-4 py-2 rounded-md text-white hover:border-pink-400 hover:shadow-[0_0_10px_#00f0ff50] focus:outline-none focus:ring-2 focus:ring-pink-400 transition transform hover:scale-105 duration-200"
       >
         {options.find(o => o.value === value)?.label || 'Please Select'}
       </button>

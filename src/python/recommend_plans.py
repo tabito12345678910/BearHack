@@ -4,7 +4,6 @@ import pandas as pd
 import os
 
 def sanitize_dental(value):
-    """Only clean dental values: X, blank, or NaN → 'None'"""
     if pd.isna(value) or str(value).strip().upper() == str(value).strip() == "":
         return "None"
     elif pd.isna(value) or str(value).strip().upper() == str(value).strip() == "X":
@@ -12,14 +11,15 @@ def sanitize_dental(value):
     return str(value)
 
 def sanitize_currency(value):
-    """Ensure a single $ sign and strip whitespace (leave blank if empty)"""
-    if pd.isna(value) or value == "" or any(char.isalpha() for char in str(value)):  # Check if there's any alphabetic character
+    if pd.isna(value) or value == "" or any(char.isalpha() for char in str(value)):
         return "N/A"
-    value_str = str(value).strip().lstrip("$")
-    return f"${value_str}"
+    try:
+        value_float = float(str(value).strip().lstrip("$"))
+        return f"${value_float:.2f}"
+    except ValueError:
+        return "N/A"
 
 def interpolate_premium(row, age):
-    """Estimate premium cost using linear interpolation by age"""
     age_cols = {
         14: "Premium Child Age 0-14",
         18: "Premium Child Age 18",
@@ -46,7 +46,6 @@ def interpolate_premium(row, age):
     return values[-1]
 
 def format_output_row(row):
-    """Format a single row of data for output"""
     deductible_info = f"{sanitize_currency(row.get('Medical Deductible - Individual - Standard'))} Medical / {sanitize_currency(row.get('Drug Deductible - Individual - Standard'))} Drugs"
     
     oop_value = sanitize_currency(row.get('Medical Maximum Out Of Pocket - Individual - Standard'))
@@ -75,12 +74,12 @@ def format_output_row(row):
         "phoneTollFree": row.get("Customer Service Phone Number Toll Free", ""),
         "phoneTTY": row.get("Customer Service Phone Number TTY", "") or "None",
         "networkURL": row.get("Network URL", ""),
-        "totalPremium": sanitize_currency(row["Estimated Cost"]),
+        "totalPremium": sanitize_currency(round(row["Estimated Cost"],2)),
         "dentalAdult": sanitize_dental(row.get("Adult Dental")),
         "dentalChild": sanitize_dental(row.get("Child Dental")),
         "deductibleDetails": deductible_info,
         "oopDetails": oop_details,
-        "estimatedTotalCost": sanitize_currency(row["Estimated Cost"]),
+        "estimatedTotalCost": sanitize_currency(round(row["Estimated Cost"],2)),
     }
 
 def main():

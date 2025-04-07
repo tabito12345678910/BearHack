@@ -117,29 +117,33 @@ const Output: React.FC = () => {
                 <img src="/help.webp" alt="Help" className="w-6 h-6 cursor-pointer transition transform hover:scale-120 duration-200 ease-in-out" />
               </button>
 
-            {showHelp && (
-              <div className="fixed absolute top-0 left-0 right-0 p-4 bg-neutral-800 text-white rounded-lg mt-10 shadow-lg max-w-md mx-auto z-50">
-                <h3 className="font-bold text-pink-400 text-lg">Help</h3>
-                <p className="mt-2 text-lg">
-                  Definitions
-                  <ul className="list-disc ml-4 text-base">
-                    <li><strong>Premium:</strong> Monthly amount paid to the insurance company.</li>
-                    <li><strong>Deductible:</strong> Amount paid out-of-pocket before the insurer helps cover costs.</li>
-                    <li><strong>OOP (Out of Pocket):</strong> Maximum amount you will pay for covered care.</li>
-                    <li><strong>Copay:</strong> Amount you pay after the deductible for specific services.</li>
-                    <li><strong>Coinsurance:</strong> Percentage you pay after meeting your deductible.</li>
-                    <li><strong>Metal Tier:</strong> Plan quality from Catastrophic to Platinum, affecting coverage and premium.</li>
-                    <li><strong>Plan Type:</strong> Determines which doctors and hospitals you can use.</li>
+              {showHelp && (
+                <div className="fixed absolute top-0 left-0 right-0 p-4 bg-neutral-800 text-white rounded-lg mt-10 shadow-lg max-w-md mx-auto z-50">
+                    <h3 className="font-bold text-pink-400 text-xl">Help</h3>
+                    <div className="mt-2 text-lg">
+                    Definitions
+                    <ul className="list-disc ml-4 text-lg">
+                        <li><strong>Premium:</strong> Monthly cost you pay for the insurance plan.</li>
+                        <li><strong>Deductible:</strong> Amount you pay before your insurance starts helping.</li>
+                        <li><strong>OOP (Out of Pocket):</strong> The most you'll pay in a year for covered care.</li>
+                        <li><strong>Copay:</strong> Fixed amount you pay for a service (like a doctor visit).</li>
+                        <li><strong>Coinsurance:</strong> Percentage you pay after meeting your deductible.</li>
+                        <li><strong>Metal Tier:</strong> Plan level (Bronze, Silver, Gold, etc.) — affects cost and coverage.</li>
+                        <li><strong>Plan Type:</strong> How you access care — see below.</li>
+                        <li><strong>HMO:</strong> Must pick an in-network doctor. Need a referral to see specialists.</li>
+                        <li><strong>PPO:</strong> No referral needed. Can see out-of-network doctors (higher cost).</li>
+                        <li><strong>POS:</strong> Must pick an in-network doctor. Can go out-of-network (higher cost).</li>
+                        <li><strong>EPO:</strong> Must stay in-network. No referral needed for specialists.</li>
                     </ul>
-                  <button
-                    onClick={handleHelpClick}
-                    className="mt-4 bg-pink-500 hover:bg-pink-600 text-white font-bold py-1 px-4 rounded-md"
-                  >
-                    Close
-                  </button>
-                </p>
-              </div>
-            )}
+                    <button
+                        onClick={handleHelpClick}
+                        className="mt-4 bg-pink-500 hover:bg-pink-600 text-white font-bold py-1 px-4 rounded-md"
+                    >
+                        Close
+                    </button>
+                    </div>
+                </div>
+                )}
 
       </h2>
 
