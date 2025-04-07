@@ -266,7 +266,7 @@ const Input: React.FC = () => {
 
             {showHelp && (
               <div className="fixed absolute top-0 left-0 right-0 p-4 bg-neutral-800 text-white rounded-lg mt-10 shadow-lg max-w-md mx-auto z-50">
-                <h3 className="font-bold text-pink-400 text-xl">Minimum Coverage Type (Metal Tier)</h3>
+                <h3 className="font-bold text-pink-400 text-xlg">Minimum Coverage Type (Metal Tier)</h3>
                 <div className="mt-2 text-xl">
                   The metal tiers represent the percentage of healthcare costs that the insurance plan covers.
                   <ul className="list-disc ml-4 text-lg">
