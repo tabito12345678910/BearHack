@@ -9,7 +9,8 @@ The application also allows users to simulate costs for their most relevant serv
 that they are fully aware of the extent of their coverage.
 
 How to run:
-- install node.js
+- install node.js here https://nodejs.org/en/download
+- clone this repository
 - open terminal (powershell or cmd)
 - cd to root directory
 - run mpm install
